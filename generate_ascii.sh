@@ -4,6 +4,9 @@ video_file=$1
 start_time=$2
 duration=$3
 
+# magic number used in two places
+frame_rate=15
+
 # Create temporary directory for frames 
 mkdir -p tmp/ascii_frames
 
@@ -31,7 +34,7 @@ echo "Extracting frames from video..."
 ffmpeg -ss $start_time \
 -i $video_file \
 -t $duration \
--vf fps=15 tmp/ascii_frames/frame%04d.jpg
+-vf fps=$frame_rate tmp/ascii_frames/frame%04d.jpg
 
 echo "Converting frames to ASCII..."
 for file in tmp/ascii_frames/*.jpg; do 
@@ -54,7 +57,7 @@ for file in tmp/ascii_frames/*.txt; do
 done
 
 echo "\nCompiling new image frames back into a video..."
-ffmpeg -framerate 15 \
+ffmpeg -framerate $frame_rate \
 -i tmp/ascii_frames/frame%04d.png output.mp4 
 
 # Add audio to the ASCII video
