@@ -27,7 +27,8 @@ ffmpeg -ss $start_time \
 
 echo "Converting frames to ASCII..."
 for file in tmp/ascii_frames/*.jpg; do 
-  jp2a --red=0.4 \
+  jp2a --width=340 \
+       --red=0.4 \
        --green=0.6 \
        --blue=0.4 \
        --background=light \
