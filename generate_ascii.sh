@@ -19,17 +19,6 @@ width=$(ffprobe -v error -select_streams v:0 \
 -show_entries stream=width \
 -of default=noprint_wrappers=1:nokey=1 "$video_file")
 
-# Calculate jp2a width (experiment with these numbers to get optimal results)
-jp2a_width=$(( $width / 2 ))
-
-# Calculate convert pointsize (experiment with these numbers to get optimal results)
-pointsize=$(( $jp2a_width / 10 ))  
-
-# Clamp minimum point size to 8
-if (( $pointsize < 8 )); then
-    pointsize=8
-fi
-
 echo "Extracting frames from video..."
 ffmpeg -ss $start_time \
 -i $video_file \
@@ -38,12 +27,11 @@ ffmpeg -ss $start_time \
 
 echo "Converting frames to ASCII..."
 for file in tmp/ascii_frames/*.jpg; do 
-  jp2a --width=$jp2a_width \
-      --red=0.4 \
-      --green=0.6 \
-      --blue=0.4 \
-      --background=light \
-      "$file" --output="${file%.jpg}.txt"
+  jp2a --red=0.4 \
+       --green=0.6 \
+       --blue=0.4 \
+       --background=light \
+       "$file" --output="${file%.jpg}.txt"
 done
 
 echo "Converting ASCII frames back into images..."
@@ -52,8 +40,7 @@ total_files=$(ls tmp/ascii_frames/*.txt | wc -l)
 for file in tmp/ascii_frames/*.txt; do 
   echo -ne "\rProcessing frame $frame_counter/$total_files"
   frame_counter=$((frame_counter+1))
-  convert -gravity Center -font Menlo-Regular \
-    -pointsize $pointsize label:@$file "${file%.txt}.png"
+  convert -gravity Center label:@$file "${file%.txt}.png"
 done
 
 echo "\nCompiling new image frames back into a video..."
