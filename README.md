@@ -35,3 +35,13 @@ brew install jp2a imagemagick ffmpeg
 ```bash
 sudo apt-get update && sudo apt-get install jp2a imagemagick ffmpeg
 ```
+
+## Experiment!
+
+ASCII art is, well, an art. If you increase the width setting, you go slower but get a larger resolution
+clip. You can also mess with the color weightings. If you get an overly large video file, you can
+resize it with ffmpeg with something like this:
+
+```
+ffmpeg -i final_output.mp4 -vf "scale=800:-1" -c:v libx264 -preset veryslow -crf 18 -c:a copy October.mp4
+```
